@@ -15,6 +15,7 @@
                         <p class="card-text">{{ product.get_category_display }} | {{ product.price }} сом</p>
                         <a href="{% url "webapp:product_detail" product.pk %}"
                            class="btn btn-primary">Посмотреть</a>
+                        <a href="{% url 'webapp:basket_change' %}?pk={{ product.pk }}&action=add" class="btn btn-primary mt-1">В корзину</a>
                     </div>
                 </div>
             </div>
