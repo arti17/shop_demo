@@ -4,6 +4,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
 from django.views.generic import DetailView, UpdateView
 from django.contrib.auth.models import User
+
+from webapp.statistic import StatisticMixin
 from .forms import UserCreationForm, UserChangeForm, PasswordChangeForm
 
 
@@ -45,13 +47,13 @@ def register_view(request, *args, **kwargs):
     return render(request, 'user_create.html', context={'form': form})
 
 
-class UserDetailView(DetailView):
+class UserDetailView(StatisticMixin, DetailView):
     model = User
     template_name = 'user_detail.html'
     context_object_name = 'user_obj'
 
 
-class UserPersonalInfoChangeView(UserPassesTestMixin, UpdateView):
+class UserPersonalInfoChangeView(StatisticMixin, UserPassesTestMixin, UpdateView):
     model = User
     template_name = 'user_info_change.html'
     form_class = UserChangeForm
@@ -64,7 +66,7 @@ class UserPersonalInfoChangeView(UserPassesTestMixin, UpdateView):
         return reverse('accounts:detail', kwargs={'pk': self.object.pk})
 
 
-class UserPasswordChangeView(UserPassesTestMixin, UpdateView):
+class UserPasswordChangeView(StatisticMixin, UserPassesTestMixin, UpdateView):
     model = User
     template_name = 'user_password_change.html'
     form_class = PasswordChangeForm

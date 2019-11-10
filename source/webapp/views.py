@@ -1,29 +1,30 @@
-from django.shortcuts import redirect
+
+from django.shortcuts import redirect, render
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, DetailView, CreateView
-from django.views.generic.base import View, TemplateView
-
+from django.views.generic.base import View
 from webapp.models import Product, Order, OrderProduct
+from webapp.statistic import StatisticMixin
 
 
-class IndexView(ListView):
+class IndexView(StatisticMixin, ListView):
     model = Product
     template_name = 'index.html'
 
 
-class ProductView(DetailView):
+class ProductView(StatisticMixin, DetailView):
     model = Product
     template_name = 'product/detail.html'
 
 
-class ProductCreateView(CreateView):
+class ProductCreateView(StatisticMixin, CreateView):
     model = Product
     template_name = 'product/create.html'
     fields = ('name', 'category', 'price', 'photo')
     success_url = reverse_lazy('webapp:index')
 
 
-class BasketChangeView(View):
+class BasketChangeView(StatisticMixin, View):
     def get(self, request, *args, **kwargs):
         products = request.session.get('products', [])
         pk = request.GET.get('pk')
@@ -41,7 +42,7 @@ class BasketChangeView(View):
         return redirect(next_url)
 
 
-class BasketView(CreateView):
+class BasketView(StatisticMixin, CreateView):
     model = Order
     fields = ('first_name', 'last_name', 'phone', 'email')
     template_name = 'product/basket.html'
@@ -96,3 +97,10 @@ class BasketView(CreateView):
             self.request.session.pop('products')
         if 'products_count' in self.request.session:
             self.request.session.pop('products_count')
+
+
+class Statistic(StatisticMixin, View):
+    def get(self, request, *args, **kwargs):
+        statistic = request.session.get('statistic')
+
+        return render(request, 'product/statistic.html', {'statistic': statistic})
