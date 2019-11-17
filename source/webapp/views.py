@@ -1,7 +1,7 @@
-
-from django.shortcuts import redirect, render
+from django.http import HttpResponseRedirect
+from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse_lazy, reverse
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.views.generic.base import View
 from webapp.models import Product, Order, OrderProduct
 from webapp.statistic import StatisticMixin
@@ -11,10 +11,17 @@ class IndexView(StatisticMixin, ListView):
     model = Product
     template_name = 'index.html'
 
+    def get_queryset(self):
+        return Product.objects.filter(in_order=True)
+
 
 class ProductView(StatisticMixin, DetailView):
     model = Product
     template_name = 'product/detail.html'
+    fields = ('name', 'category', 'price', 'photo', 'in_order')
+
+    def get_success_url(self):
+        return reverse('webapp:product_detail', kwargs={'pk': self.object.pk})
 
 
 class ProductCreateView(StatisticMixin, CreateView):
@@ -31,7 +38,9 @@ class BasketChangeView(StatisticMixin, View):
         action = request.GET.get('action')
         next_url = request.GET.get('next', reverse('webapp:index'))
         if action == 'add':
-            products.append(pk)
+            product = get_object_or_404(Product, pk=pk)
+            if product.in_order:
+                products.append(pk)
         else:
             for product_pk in products:
                 if product_pk == pk:
@@ -104,3 +113,26 @@ class Statistic(StatisticMixin, View):
         statistic = request.session.get('statistic')
 
         return render(request, 'product/statistic.html', {'statistic': statistic})
+
+
+class ProductUpdateView(StatisticMixin, UpdateView):
+    model = Product
+    template_name = 'product/update.html'
+    fields = ('name', 'category', 'price', 'photo', 'in_order')
+    context_object_name = 'product'
+
+    def get_success_url(self):
+        return reverse('webapp:product_detail', kwargs={'pk': self.object.pk})
+
+
+class ProductDeleteView(StatisticMixin, DeleteView):
+    model = Product
+    template_name = 'product/delete.html'
+    success_url = reverse_lazy('webapp:index')
+    context_object_name = 'product'
+
+    def delete(self, request, *args, **kwargs):
+        product = self.object = self.get_object()
+        product.in_order = False
+        product.save()
+        return HttpResponseRedirect(self.get_success_url())
