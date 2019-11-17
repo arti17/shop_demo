@@ -3,6 +3,8 @@ from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.views.generic.base import View
+
+from webapp.forms import BasketOrderCreateForm
 from webapp.models import Product, Order, OrderProduct
 from webapp.statistic import StatisticMixin
 
@@ -53,7 +55,7 @@ class BasketChangeView(StatisticMixin, View):
 
 class BasketView(StatisticMixin, CreateView):
     model = Order
-    fields = ('first_name', 'last_name', 'phone', 'email')
+    form_class = BasketOrderCreateForm
     template_name = 'product/basket.html'
     success_url = reverse_lazy('webapp:index')
 
@@ -62,6 +64,11 @@ class BasketView(StatisticMixin, CreateView):
         kwargs['basket'] = basket
         kwargs['basket_total'] = basket_total
         return super().get_context_data(**kwargs)
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
 
     def form_valid(self, form):
         if self._basket_empty():
@@ -136,3 +143,21 @@ class ProductDeleteView(StatisticMixin, DeleteView):
         product.in_order = False
         product.save()
         return HttpResponseRedirect(self.get_success_url())
+
+
+class OrderListView(ListView):
+    template_name = 'order/list.html'
+
+    def get_queryset(self):
+        if self.request.user.has_perm('webapp:view_order'):
+            return Order.objects.all().order_by('-created_at')
+        return self.request.user.orders.all().order_by('-created_at')
+
+
+class OrderDetailView(DetailView):
+    template_name = 'order/detail.html'
+
+    def get_queryset(self):
+        if self.request.user.has_perm('webapp:view_order'):
+            return Order.objects.all()
+        return self.request.user.orders.all()
