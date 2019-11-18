@@ -11,18 +11,6 @@ class BasketOrderCreateForm(ModelForm):
             self.user = None
         super().__init__(**kwargs)
 
-    def clean_first_name(self):
-        if not self.user and not self.cleaned_data.get('first_name'):
-            raise ValidationError('Вы должны авторизоваться либо указать ваше имя!')
-
-    def clean_email(self):
-        if not self.user and not self.cleaned_data.get('email'):
-            raise ValidationError('Вы должны авторизоваться либо указать ваш email!')
-
-    def clean_phone(self):
-        if not self.user and not self.cleaned_data.get('phone'):
-            raise ValidationError('Вы должны авторизоваться либо указать ваш телефон!')
-
     def save(self, commit=True):
         self.instance.user = self.user
         return super().save(commit)
