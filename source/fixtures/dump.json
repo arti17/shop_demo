@@ -6,17 +6,19 @@
     "name": "\u042f\u0431\u043b\u043e\u043a\u0438",
     "category": "food",
     "photo": "product_images/2374-ed4_wide.jpg",
-    "price": "50.00"
+    "price": "50.00",
+    "in_order": true
   }
 },
 {
   "model": "webapp.product",
   "pk": 2,
   "fields": {
-    "name": "\u0413\u0440\u0443\u0448\u0438",
+    "name": "\u0413\u0440\u0443\u0448\u0438.",
     "category": "food",
     "photo": "product_images/grusha.jpg",
-    "price": "40.00"
+    "price": "40.00",
+    "in_order": true
   }
 },
 {
@@ -26,7 +28,8 @@
     "name": "\u0414\u0436\u0438\u043d\u0441\u044b \u0436\u0435\u043d\u0441\u043a\u0438\u0435",
     "category": "clothes",
     "photo": "product_images/01_1526.jpg",
-    "price": "2000.00"
+    "price": "2000.00",
+    "in_order": true
   }
 },
 {
@@ -36,7 +39,8 @@
     "name": "\u0421\u0440\u0435\u0434\u0441\u0442\u0432\u043e \u0434\u043b\u044f \u043c\u044b\u0442\u044c\u044f \u043f\u043e\u0441\u0443\u0434\u044b",
     "category": "household",
     "photo": "product_images/14306911.jpeg",
-    "price": "180.00"
+    "price": "180.00",
+    "in_order": true
   }
 },
 {
@@ -46,7 +50,8 @@
     "name": "\u041e\u0431\u044b\u0447\u043d\u044b\u0439 \u043f\u043e\u0440\u043e\u0448\u043e\u043a",
     "category": "household",
     "photo": "product_images/239.750.jpg",
-    "price": "100.00"
+    "price": "100.00",
+    "in_order": true
   }
 },
 {
@@ -56,36 +61,147 @@
     "name": "\u0428\u0430\u0440\u0438\u043a\u0438 \u0441 \u0433\u0435\u043b\u0438\u0435\u043c",
     "category": "other",
     "photo": "product_images/Pa2E3TtXqHKCUDAumY.jpg",
-    "price": "70.00"
+    "price": "70.00",
+    "in_order": true
   }
 },
 {
-  "model": "auth.user",
-  "pk": 1,
+  "model": "webapp.product",
+  "pk": 8,
   "fields": {
-    "password": "pbkdf2_sha256$120000$EDfng6jA7vnt$0YiYg2OIeoi4EUuuY6IXinmEgRQTSbGn9vWw7lTbK+M=",
-    "last_login": "2019-09-03T11:07:08.594Z",
-    "is_superuser": true,
-    "username": "admin",
+    "name": "1",
+    "category": "other",
+    "photo": "",
+    "price": "1.00",
+    "in_order": true
+  }
+},
+{
+  "model": "webapp.order",
+  "pk": 3,
+  "fields": {
+    "user": 1,
     "first_name": "\u0410\u0434\u043c\u0438\u043d",
-    "last_name": "\u0410\u0434\u043c\u0438\u043d\u043e\u0432\u0438\u0447",
-    "email": "",
-    "is_staff": true,
-    "is_active": true,
-    "date_joined": "2019-09-03T06:46:57.824Z",
-    "groups": [],
-    "user_permissions": []
+    "last_name": "\u0410\u0434\u043c\u0438\u043d\u043e\u0432",
+    "email": "admin@admin.com",
+    "phone": "+123456789",
+    "status": "canceled",
+    "created_at": "2019-11-17T16:11:57.353Z",
+    "updated_at": "2019-11-18T12:31:48.324Z"
   }
 },
 {
-  "model": "accounts.profile",
-  "pk": 1,
+  "model": "webapp.order",
+  "pk": 4,
   "fields": {
-    "user": [
-      "admin"
-    ],
-    "birth_date": null,
-    "avatar": "user_pics/1566399253171599268.jpg"
+    "user": 2,
+    "first_name": "\u042e\u0437\u0435\u0440",
+    "last_name": "\u042e\u0437\u0435\u0440\u043e\u0432",
+    "email": "user@user.com",
+    "phone": "+9966374999",
+    "status": "delivered",
+    "created_at": "2019-11-17T16:16:29.878Z",
+    "updated_at": "2019-11-18T12:31:44.427Z"
+  }
+},
+{
+  "model": "webapp.order",
+  "pk": 5,
+  "fields": {
+    "user": 1,
+    "first_name": "\u0410\u0434\u043c\u0438\u043d",
+    "last_name": "\u0410\u0434\u043c\u0438\u043d\u043e\u0432",
+    "email": "admin@admin.com",
+    "phone": "+123456789",
+    "status": "processing",
+    "created_at": "2019-11-18T03:39:13.318Z",
+    "updated_at": "2019-11-18T12:31:39.706Z"
+  }
+},
+{
+  "model": "webapp.order",
+  "pk": 6,
+  "fields": {
+    "user": 2,
+    "first_name": "\u0411\u043b\u0430",
+    "last_name": "\u0411\u043b\u0430\u0432\u043e\u0432",
+    "email": "bla@bla.com",
+    "phone": "+343242352357",
+    "status": "payed",
+    "created_at": "2019-11-18T08:06:34.599Z",
+    "updated_at": "2019-11-18T12:31:30.772Z"
+  }
+},
+{
+  "model": "webapp.orderproduct",
+  "pk": 4,
+  "fields": {
+    "order": 3,
+    "product": 1,
+    "amount": "2.00"
+  }
+},
+{
+  "model": "webapp.orderproduct",
+  "pk": 5,
+  "fields": {
+    "order": 4,
+    "product": 2,
+    "amount": "1.00"
+  }
+},
+{
+  "model": "webapp.orderproduct",
+  "pk": 6,
+  "fields": {
+    "order": 4,
+    "product": 4,
+    "amount": "2.00"
+  }
+},
+{
+  "model": "webapp.orderproduct",
+  "pk": 7,
+  "fields": {
+    "order": 5,
+    "product": 6,
+    "amount": "1.00"
+  }
+},
+{
+  "model": "webapp.orderproduct",
+  "pk": 8,
+  "fields": {
+    "order": 5,
+    "product": 2,
+    "amount": "4.00"
+  }
+},
+{
+  "model": "webapp.orderproduct",
+  "pk": 9,
+  "fields": {
+    "order": 5,
+    "product": 2,
+    "amount": "4.00"
+  }
+},
+{
+  "model": "webapp.orderproduct",
+  "pk": 15,
+  "fields": {
+    "order": 6,
+    "product": 2,
+    "amount": "2.00"
+  }
+},
+{
+  "model": "webapp.orderproduct",
+  "pk": 16,
+  "fields": {
+    "order": 6,
+    "product": 3,
+    "amount": "1.00"
   }
 }
 ]
