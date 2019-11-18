@@ -145,8 +145,9 @@ class ProductDeleteView(StatisticMixin, DeleteView):
         return HttpResponseRedirect(self.get_success_url())
 
 
-class OrderListView(ListView):
+class OrderListView(StatisticMixin, ListView):
     template_name = 'order/list.html'
+    context_object_name = 'orders'
 
     def get_queryset(self):
         if self.request.user.has_perm('webapp:view_order'):
@@ -154,10 +155,56 @@ class OrderListView(ListView):
         return self.request.user.orders.all().order_by('-created_at')
 
 
-class OrderDetailView(DetailView):
+class OrderDetailView(StatisticMixin, DetailView):
     template_name = 'order/detail.html'
+    context_object_name = 'order'
 
     def get_queryset(self):
         if self.request.user.has_perm('webapp:view_order'):
             return Order.objects.all()
         return self.request.user.orders.all()
+
+
+class OrderCreateView(CreateView):
+    model = Order
+    pass
+
+
+class OrderUpdateView(UpdateView):
+    model = Order
+    pass
+
+
+class OrderDeliverView(View):
+    def get(self, request, *args, **kwargs):
+        order_pk = kwargs.get('pk')
+        order = get_object_or_404(Order, pk=order_pk)
+        order.status = 'delivered'
+        order.save()
+
+        return redirect(reverse('webapp:order', kwargs={'pk': order_pk}))
+
+
+class OrderCancelView(View):
+    def get(self, request, *args, **kwargs):
+        order_pk = kwargs.get('pk')
+        order = get_object_or_404(Order, pk=order_pk)
+        order.status = 'canceled'
+        order.save()
+
+        return redirect(reverse('webapp:order', kwargs={'pk': order_pk}))
+
+
+class OrderProductCreateView(CreateView):
+    model = OrderProduct
+    pass
+
+
+class OrderProductUpdateView(UpdateView):
+    model = OrderProduct
+    pass
+
+
+class OrderProductDeleteView(DeleteView):
+    model = OrderProduct
+    pass
