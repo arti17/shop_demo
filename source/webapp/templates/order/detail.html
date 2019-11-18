@@ -7,13 +7,16 @@
         <div class="card-header">
             <ul class="nav nav-pills card-header-pills">
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'webapp:order_cancel' order.pk %}">Отменить</a>
+                    <a class="nav-link" href="{% url 'webapp:order_cancel' order.pk %}">Отменить заказ</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'webapp:order_deliver' order.pk %}">Отметить как доставлен</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'webapp:update_order' order.pk %}">Редактировать</a>
+                    <a class="nav-link" href="{% url 'webapp:update_order' order.pk %}">Редактировать заказ</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'webapp:add_order_products' order.pk %}">Добавить товары</a>
                 </li>
             </ul>
         </div>
@@ -24,11 +27,12 @@
             <p class="card-text"><small>Дата создания заказа: </small>{{ order.created_at|date:'d.m.Y' }}</p>
             <p class="card-text"><small>Статус заказа: </small>{{ order.get_status_display }}</p>
 
-            <table class="table col-4 offset-4">
+            <table class="table col-6 offset-3">
                 <thead>
                 <tr>
-                    <th scope="col">Товары в заказе</th>
+                    <th scope="col">Товары</th>
                     <th scope="col">Количество</th>
+                    <th scope="col" colspan="2">Действия</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -43,6 +47,16 @@
                      <td>
                         {% for product_in_order in order.order_products.all %}
                             <p>{{ product_in_order.amount }}</p>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% for product in order.order_products.all %}
+                            <a class="nav-link" href="{% url 'webapp:update_order_products' product.pk %}">Редактировать</a>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% for product in order.order_products.all %}
+                            <a class="nav-link" href="{% url 'webapp:delete_order_products' product.pk %}">Удалить</a>
                         {% endfor %}
                     </td>
                 </tr>

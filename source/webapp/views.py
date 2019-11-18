@@ -5,7 +5,7 @@ from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.views.generic.base import View
 
-from webapp.forms import BasketOrderCreateForm, ManualOrderForm
+from webapp.forms import BasketOrderCreateForm, ManualOrderForm, OrderProductForm
 from webapp.models import Product, Order, OrderProduct
 from webapp.statistic import StatisticMixin
 
@@ -207,14 +207,41 @@ class OrderCancelView(View):
 
 class OrderProductCreateView(CreateView):
     model = OrderProduct
-    pass
+    form_class = OrderProductForm
+    template_name = 'order/add_order_product.html'
+
+    def form_valid(self, form):
+        order_pk = self.kwargs.get('pk')
+        self.order = Order.objects.get(pk=order_pk)
+        self.object = form.save(commit=False)
+        self.object.order = self.order
+        self.object.save()
+        return redirect(self.get_success_url())
+
+    def get_success_url(self):
+        return reverse('webapp:order', kwargs={'pk': self.order.pk})
 
 
 class OrderProductUpdateView(UpdateView):
     model = OrderProduct
-    pass
+    form_class = OrderProductForm
+    template_name = 'order/update_order_product.html'
+
+    def get_success_url(self):
+        pk = self.kwargs.get('pk')
+        order_product = OrderProduct.objects.get(pk=pk)
+        order_pk = order_product.order.pk
+        return reverse('webapp:order', kwargs={'pk': order_pk})
 
 
 class OrderProductDeleteView(DeleteView):
     model = OrderProduct
-    pass
+
+    def get(self, request, *args, **kwargs):
+        return self.delete(request, *args, **kwargs)
+
+    def get_success_url(self):
+        pk = self.kwargs.get('pk')
+        order_product = OrderProduct.objects.get(pk=pk)
+        order_pk = order_product.order.pk
+        return reverse('webapp:order', kwargs={'pk': order_pk})
