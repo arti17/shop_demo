@@ -6,18 +6,26 @@
     <div class="card text-center">
         <div class="card-header">
             <ul class="nav nav-pills card-header-pills">
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'webapp:order_cancel' order.pk %}">Отменить заказ</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'webapp:order_deliver' order.pk %}">Отметить как доставлен</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'webapp:update_order' order.pk %}">Редактировать заказ</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'webapp:add_order_products' order.pk %}">Добавить товары</a>
-                </li>
+                {% if perms.webapp.can_cancel_order %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'webapp:order_cancel' order.pk %}">Отменить заказ</a>
+                    </li>
+                {% endif %}
+                {% if perms.webapp.can_deliver_order %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'webapp:order_deliver' order.pk %}">Отметить как доставлен</a>
+                    </li>
+                {% endif %}
+                {% if perms.webapp.change_order %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'webapp:update_order' order.pk %}">Редактировать заказ</a>
+                    </li>
+                {% endif %}
+                {% if perms.webapp.can_add_product_to_order %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'webapp:add_order_products' order.pk %}">Добавить товары</a>
+                    </li>
+                {% endif %}
             </ul>
         </div>
         <div class="card-body">
@@ -32,7 +40,9 @@
                 <tr>
                     <th scope="col">Товары</th>
                     <th scope="col">Количество</th>
-                    <th scope="col" colspan="2">Действия</th>
+                    {% if perms.webapp.can_update_product_in_order or perms.webapp.can_delete_product_from_order %}
+                        <th scope="col" colspan="2">Действия</th>
+                    {% endif %}
                 </tr>
                 </thead>
                 <tbody>
@@ -40,28 +50,33 @@
                     <td>
                         {% for product in order.products.all %}
                             <p>{{ product }}</p>
-                            {% empty %}
+                        {% empty %}
                             <small>Пока нет товаров</small>
                         {% endfor %}
                     </td>
-                     <td>
+                    <td>
                         {% for product_in_order in order.order_products.all %}
                             <p>{{ product_in_order.amount }}</p>
                         {% endfor %}
                     </td>
                     <td>
                         {% for product in order.order_products.all %}
-                            <a class="nav-link" href="{% url 'webapp:update_order_products' product.pk %}">Редактировать</a>
+                            {% if perms.webapp.can_update_product_in_order %}
+                                <a class="nav-link" href="{% url 'webapp:update_order_products' product.pk %}">Редактировать</a>
+                            {% endif %}
                         {% endfor %}
                     </td>
                     <td>
                         {% for product in order.order_products.all %}
-                            <a class="nav-link" href="{% url 'webapp:delete_order_products' product.pk %}">Удалить</a>
+                            {% if perms.webapp.can_delete_product_from_order %}
+                                <a class="nav-link"
+                                   href="{% url 'webapp:delete_order_products' product.pk %}">Удалить</a>
+                            {% endif %}
                         {% endfor %}
                     </td>
                 </tr>
                 </tbody>
-         </table>
+            </table>
         </div>
     </div>
 {% endblock %}
