@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}Заказ {{ order.pk }}{% endblock %}
+
+{% block content %}
+    <div class="card text-center">
+        <div class="card-header">
+            <ul class="nav nav-pills card-header-pills">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'webapp:order_cancel' order.pk %}">Отменить</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'webapp:order_deliver' order.pk %}">Отметить как доставлен</a>
+                </li>
+            </ul>
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">Заказ №{{ order.pk }}</h5>
+            <p class="card-text"><small>Заказчик: </small>{{ order.first_name }} {{ order.last_name }}</p>
+            <p class="card-text"><small>Контактные данные: </small>{{ order.email }} {{ order.phone }}</p>
+            <p class="card-text"><small>Дата создания заказа: </small>{{ order.created_at|date:'d.m.Y' }}</p>
+            <p class="card-text"><small>Статус заказа: </small>{{ order.get_status_display }}</p>
+            <p class="card-text"><small>Продукты в заказе: </small>
+                {% for order in order.products.all %}
+                    <span>{{ order }}, </span>
+                {% endfor %}
+
+            </p>
+        </div>
+    </div>
+{% endblock %}
