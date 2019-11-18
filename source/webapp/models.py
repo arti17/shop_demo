@@ -54,6 +54,10 @@ class Order(models.Model):
     class Meta:
         verbose_name = 'Заказ'
         verbose_name_plural = 'Заказы'
+        permissions = [
+            ('can_deliver_order', 'Может доставлять заказ'),
+            ('can_cancel_order', 'Может отменять заказ'),
+        ]
 
 
 class OrderProduct(models.Model):
@@ -67,3 +71,8 @@ class OrderProduct(models.Model):
     class Meta:
         verbose_name = 'Товар в заказе'
         verbose_name_plural = 'Товары в заказах'
+        permissions = [
+            ('can_add_product_to_order', 'Может добавлять товары в заказ'),
+            ('can_update_product_in_order', 'Может редактировать товары в заказе'),
+            ('can_delete_product_from_order', 'Может удалять товары из заказа'),
+        ]
