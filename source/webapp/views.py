@@ -1,10 +1,11 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.views.generic.base import View
 
-from webapp.forms import BasketOrderCreateForm
+from webapp.forms import BasketOrderCreateForm, ManualOrderForm
 from webapp.models import Product, Order, OrderProduct
 from webapp.statistic import StatisticMixin
 
@@ -145,7 +146,7 @@ class ProductDeleteView(StatisticMixin, DeleteView):
         return HttpResponseRedirect(self.get_success_url())
 
 
-class OrderListView(StatisticMixin, ListView):
+class OrderListView(LoginRequiredMixin, StatisticMixin, ListView):
     template_name = 'order/list.html'
     context_object_name = 'orders'
 
@@ -158,21 +159,30 @@ class OrderListView(StatisticMixin, ListView):
 class OrderDetailView(StatisticMixin, DetailView):
     template_name = 'order/detail.html'
     context_object_name = 'order'
-
-    def get_queryset(self):
-        if self.request.user.has_perm('webapp:view_order'):
-            return Order.objects.all()
-        return self.request.user.orders.all()
+    model = Order
 
 
 class OrderCreateView(CreateView):
     model = Order
-    pass
+    form_class = ManualOrderForm
+    template_name = 'order/create_order.html'
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+    def get_success_url(self):
+        return reverse('webapp:order', kwargs={'pk': self.object.pk})
 
 
 class OrderUpdateView(UpdateView):
     model = Order
-    pass
+    form_class = ManualOrderForm
+    template_name = 'order/update_order.html'
+
+    def get_success_url(self):
+        return reverse('webapp:order', kwargs={'pk': self.object.pk})
 
 
 class OrderDeliverView(View):

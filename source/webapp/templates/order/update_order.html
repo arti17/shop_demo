@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Редактировать заказ {{ order.pk }}
+{% endblock %}
+
+{% block content %}
+    <h1>Редактировать заказ №{{ order.pk }}</h1>
+    <form action="" method="post">
+        {% include 'partial/form.html' %}
+        <input type="submit" value="Редактировать" class="btn btn-success">
+        <button onclick="history.back()" class="btn btn-warning">Отмена</button>
+    </form>
+{% endblock %}
